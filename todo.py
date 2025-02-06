@@ -7,42 +7,55 @@ while True:
 
     with open('todo/todo.txt', 'r') as file: 
         todos = file.readlines()
-   
+    with open('todo/done.txt','r') as file:
+        done = file.readlines()
+
+    if user_action == 'add' or user_action == 'edit' or user_action=='complete':
+            print(f'{user_action} what?')
     
-    match user_action: 
-        case 'add':
-            todo = input('Enter a todos: ') + '\n'
-            todos.append(todo)
-            
-            with open('todo/todo.txt', 'w') as file: 
-                file.writelines(todos)
+    elif 'add' in user_action: 
 
-        case 'show' | 'display':
+        todo = user_action[3:] 
+        todos.append(todo)
+        print('Successfully added!')
 
-            ## new_todos = [item.strip('\n') for item in todos]
+        with open('todo/todo.txt', 'w') as file: 
+            file.writelines(todos)
 
-            for index, item in enumerate(todos):
+    elif 'show' in user_action or 'display' in user_action:
+
+        ## new_todos = [item.strip('\n') for item in todos]
+        for index, item in enumerate(todos):
                 item = item.strip('\n')
                 row = f"{index + 1} - {item} " 
                 print(row)
 
-        case 'edit':
-            file = open('todo/todo.txt', 'w')
-            number = int(input('Number of the todo to edit:'))
-            number = number - 1
-            todos[number] = input('Enter the new todo: ') + '\n'
+    elif 'edit' in user_action: 
+        
+        number = int(user_action[4:])
+        #number = int(input('Number of the todo to edit:'))
+        number = number - 1
+        todos[number] = input('Enter the new todo: ') + '\n'
 
-            with open('todo/todo.txt', 'w') as file: 
+        with open('todo/todo.txt', 'w') as file: 
+            file.writelines(todos)
+
+    elif 'complete' in user_action or 'done' in user_action: 
+        
+        num = int(user_action[8:])
+        done.append(todos[num-1])
+        with open('todo/done.txt', 'w') as file: 
+                file.writelines(done)
+
+        todos.pop(num-1) 
+        with open('todo/todo.txt', 'w') as file: 
                 file.writelines(todos)
 
-        case 'complete': 
-            file = open('todo/todo.txt', 'w')
-            num = int(input('Enter the number you have completed: '))
-            todos.pop(num - 1)
-            with open('todo/todo.txt', 'w') as file: 
-                file.writelines(todos)
+        print('Yayy! you finished something today!')
 
-            print('Yayy! you finished something today!')
+    elif 'exit' in user_action: 
 
-        case 'exit':
-            break
+        break
+
+    else: 
+         print("Command doesn't exist!")
